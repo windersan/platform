@@ -1,0 +1,163 @@
+
+ <mat-sidenav-container class="main-container">
+  <mat-sidenav mode="side" opened>
+
+    <mat-list>
+
+      <mat-list-item *ngFor="let str of strs">
+        <button (click)="toggle()" mat-stroked-button class="btnbtn">
+          {{str}}
+        </button>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+      
+    </mat-list>
+
+  </mat-sidenav>
+    
+    <mat-sidenav-content>
+
+       <div *ngIf="showInit" class="insert-remove-container">
+      <span><img src="assets/images/ercot2.jpg" style="width: 100%; height: 513px"></span>
+      </div>
+ 
+
+      <div @flyInOut *ngIf="isShown" class="insert-remove-container">
+
+      <mat-list >
+        <mat-list-item *ngFor="let h of header">
+          <button [matMenuTriggerFor]="menu" >
+            <!-- <mat-icon>apps</mat-icon>  -->Filters
+          </button>
+          <mat-menu style="width:1000px"  #menu="matMenu">
+            <form (click)="stopPropagation($event)">
+              <p style="font-weight: bold">RTD Timestamp</p>
+            </form> 
+         
+            <mat-checkbox (click)="stopPropagation($event)" [(ngModel)]="checked_rtd_date">
+              Filter Date
+            </mat-checkbox>
+
+            <mat-form-field *ngIf="checked_rtd_date"> 
+              <mat-label>Start date</mat-label>
+              <input matInput [matDatepicker]="picker" (click)="stopPropagation($event)">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="checked_rtd_date"> 
+              <mat-label>End date</mat-label>
+              <input matInput [matDatepicker]="picker" (click)="stopPropagation($event)">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-divider></mat-divider>
+
+            <form (click)="stopPropagation($event)">
+           
+              <p style="font-weight: bold">Interval Ending</p>
+            </form> 
+          
+            <mat-checkbox (click)="stopPropagation($event)" [(ngModel)]="checked_end_date">
+              Filter Date
+            </mat-checkbox>
+
+            <mat-form-field *ngIf="checked_end_date">
+              <mat-label>Start date</mat-label>
+              <input matInput [matDatepicker]="picker2" (click)="stopPropagation($event)">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="checked_end_date">
+              <mat-label>End date</mat-label>
+              <input matInput [matDatepicker]="picker2" (click)="stopPropagation($event)">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+
+         
+            <mat-divider></mat-divider>
+            <p style="font-weight: bold">Settlement Point</p>
+            <div *ngFor="let f of filters.controls; let i = index">
+             <mat-form-field color="accent">
+              <mat-label>Search</mat-label>
+              <input matInput (keyup)="applyFilter($event)" (click)="stopPropagation($event)" 
+              value="Ex. AEEC"> 
+             </mat-form-field> 
+             <button (click)="deleteFilter(i)" mat-icon-button>
+              <mat-icon>close</mat-icon>
+            </button>
+            </div>
+
+            <button class="arrowbtn" mat-icon-button (click)="addFilter($event)">
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+
+            <mat-divider></mat-divider> 
+            <mat-checkbox (click)="stopPropagation($event)">Pivot data</mat-checkbox>
+
+            <mat-divider></mat-divider> 
+            <button class="submitfilter">Submit</button>
+
+          </mat-menu>
+          <span>
+            <mat-form-field color="accent">
+              <mat-label>Search</mat-label>
+              <input matInput (keyup)="applyFilter($event)" >
+            </mat-form-field>
+          </span>
+          <span class="example-spacer"></span>
+          <button (click)="toggle()" mat-icon-button>
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-divider></mat-divider>
+        </mat-list-item>
+      </mat-list>
+     
+     
+
+      <table mat-table [dataSource]="dataSource" class="container-tbl mat-elevation-z8">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+      
+      
+        <ng-container matColumnDef="lmp">
+          <th mat-header-cell *matHeaderCellDef> LMP </th>
+          <td mat-cell *matCellDef="let lmp"> {{lmp.price}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="rtdTimestamp">
+          <th mat-header-cell *matHeaderCellDef> RTD Timestamp </th>
+          <td mat-cell *matCellDef="let lmp"> {{lmp.rtdTimestamp}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="intervalEnding">
+          <th mat-header-cell *matHeaderCellDef> Interval Ending </th>
+          <td mat-cell *matCellDef="let lmp"> {{lmp.intervalEnding}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="settlementPoint">
+          <th mat-header-cell *matHeaderCellDef> Settlement Point </th>
+          <td mat-cell *matCellDef="let lmp"> {{lmp.settlementPoint}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="settlementPointType">
+          <th mat-header-cell *matHeaderCellDef> Settlement Point Type </th>
+          <td mat-cell *matCellDef="let lmp"> {{lmp.settlementPointType}} </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      
+      </table>
+      
+    </div>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+
+
+
